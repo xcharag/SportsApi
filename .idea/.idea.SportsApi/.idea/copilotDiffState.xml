@@ -3,15 +3,6 @@
   <component name="CopilotDiffPersistence">
     <option name="pendingDiffs">
       <map>
-        <entry key="$PROJECT_DIR$/SportsApi.api/appsettings.json">
-          <value>
-            <PendingDiffInfo>
-              <option name="filePath" value="$PROJECT_DIR$/SportsApi.api/appsettings.json" />
-              <option name="originalContent" value="{&#10;  &quot;Logging&quot;: {&#10;    &quot;LogLevel&quot;: {&#10;      &quot;Default&quot;: &quot;Information&quot;,&#10;      &quot;Microsoft.AspNetCore&quot;: &quot;Warning&quot;&#10;    }&#10;  },&#10;  &quot;ConnectionStrings&quot;: {&#10;    &quot;DefaultConnection&quot;: &quot;Server=38.49.214.67,9999;User ID=sa; Password=MicrocomTi@SantaLuz2026;Initial Catalog=SigaSantaLuzDb;MultipleActiveResultSets=True;TrustServerCertificate=True&quot;&#10;  },&#10;  &quot;JwtSettings&quot;: {&#10;    &quot;SecretKey&quot;: &quot;75c46c621c096ca4cd5b70027f2b59deb048aa4faca70b97&quot;,&#10;    &quot;Issuer&quot;: &quot;SisApi&quot;,&#10;    &quot;Audience&quot;: &quot;SisApiClient&quot;&#10;  },&#10;  &quot;SisApi&quot;: {&#10;    &quot;BaseUrl&quot;: &quot;https://sisapi.xchar.site&quot;&#10;  },&#10;  &quot;DynamicPermission&quot;: {&#10;    &quot;Module&quot;: &quot;SportsApi&quot;&#10;  },&#10;  &quot;AllowedHosts&quot;: &quot;*&quot;,&#10;  &quot;AllowedOrigins&quot;: &quot;&quot;&#10;}&#10;" />
-              <option name="updatedContent" value="{&#13;&#10;  &quot;Logging&quot;: {&#13;&#10;    &quot;LogLevel&quot;: {&#13;&#10;      &quot;Default&quot;: &quot;Information&quot;,&#13;&#10;      &quot;Microsoft.AspNetCore&quot;: &quot;Warning&quot;&#13;&#10;    }&#13;&#10;  },&#13;&#10;  &quot;ConnectionStrings&quot;: {&#13;&#10;    &quot;CoreConnection&quot;: &quot;Host=localhost;Port=5432;Database=SportsApiDb;Username=postgres;Password=your_password_here&quot;&#13;&#10;  },&#13;&#10;  &quot;JwtSettings&quot;: {&#13;&#10;    &quot;SecretKey&quot;: &quot;75c46c621c096ca4cd5b70027f2b59deb048aa4faca70b97&quot;,&#13;&#10;    &quot;Issuer&quot;: &quot;SisApi&quot;,&#13;&#10;    &quot;Audience&quot;: &quot;SisApiClient&quot;&#13;&#10;  },&#13;&#10;  &quot;SisApi&quot;: {&#13;&#10;    &quot;BaseUrl&quot;: &quot;https://sisapi.xchar.site&quot;&#13;&#10;  },&#13;&#10;  &quot;DynamicPermission&quot;: {&#13;&#10;    &quot;Module&quot;: &quot;SportsApi&quot;&#13;&#10;  },&#13;&#10;  &quot;AllowedHosts&quot;: &quot;*&quot;,&#13;&#10;  &quot;AllowedOrigins&quot;: &quot;&quot;&#13;&#10;}&#13;&#10;" />
-            </PendingDiffInfo>
-          </value>
-        </entry>
         <entry key="$PROJECT_DIR$/SportsApi.infrastructure/InfrastructureServiceExtension.cs">
           <value>
             <PendingDiffInfo>

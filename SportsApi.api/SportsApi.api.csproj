@@ -7,11 +7,27 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="Ardalis.ApiEndpoints" Version="4.1.0" />
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.15"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.15">
+          <PrivateAssets>all</PrivateAssets>
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="9.0.6" />
+        <PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="9.0.6" />
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Controllers\" />
+      <Folder Include="Controllers\Matches\Events\" />
+      <Folder Include="Controllers\Matches\Matches\" />
+      <Folder Include="Controllers\Teams\Players\" />
+      <Folder Include="Controllers\Teams\Teams\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\SportsApi.application\SportsApi.application.csproj" />
+      <ProjectReference Include="..\SportsApi.domain\SportsApi.domain.csproj" />
+      <ProjectReference Include="..\SportsApi.infrastructure\SportsApi.infrastructure.csproj" />
     </ItemGroup>
 
 </Project>

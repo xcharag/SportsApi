@@ -7,7 +7,19 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="Modules\Tournaments\" />
+      <Folder Include="Modules\Matches\Events\" />
+      <Folder Include="Modules\Matches\Matches\" />
+      <Folder Include="Modules\Teams\Players\" />
+      <Folder Include="Modules\Teams\Teams\" />
+      <Folder Include="Modules\Tournaments\Tournaments\Commands\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\SportsApi.domain\SportsApi.domain.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.15" />
     </ItemGroup>
 
 </Project>
