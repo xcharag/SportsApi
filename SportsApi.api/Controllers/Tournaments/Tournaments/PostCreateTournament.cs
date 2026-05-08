@@ -17,7 +17,7 @@ public class PostCreateTournament(IMediator mediator) : EndpointBaseAsync
     .WithActionResult<CreateTournamentCommandResult>
 {
     [HttpPost("api/v1/tournaments")]
-    [SwaggerOperation(Tags = new[] { "Tournaments" })]
+    [SwaggerOperation(Tags = ["Tournaments"])]
     [ProducesResponseType((int)HttpStatusCode.Created, Type = typeof(CreateTournamentCommandResult))]
     [ProducesResponseType((int)HttpStatusCode.BadRequest, Type = typeof(ValidationProblemDetails))]
     public override async Task<ActionResult<CreateTournamentCommandResult>> HandleAsync(
