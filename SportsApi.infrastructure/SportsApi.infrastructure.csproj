@@ -6,4 +6,25 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <ItemGroup>
+      <Folder Include="Persistence\" />
+      <Folder Include="Services\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Ardalis.Specification" Version="9.3.1" />
+      <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.15" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.15" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.15">
+        <PrivateAssets>all</PrivateAssets>
+        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      </PackageReference>
+      <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\SportsApi.application\SportsApi.application.csproj" />
+      <ProjectReference Include="..\SportsApi.domain\SportsApi.domain.csproj" />
+    </ItemGroup>
+
 </Project>
