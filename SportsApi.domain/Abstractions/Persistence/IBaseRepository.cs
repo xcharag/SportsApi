@@ -1,3 +1,4 @@
+using System.Linq.Expressions;
 using Ardalis.Specification;
 using SportsApi.domain.Abstractions.Dtos;
 using SportsApi.domain.Abstractions.Entities;
@@ -20,4 +21,8 @@ public interface IBaseRepository<TEntity> : IBaseRepository where TEntity : Enti
     Task<PaginationResult<TEntity>> GetPaginatedAsync<TPagination>(TPagination pagination, CancellationToken cancellationToken)
         where TPagination : PaginationSpecification<TEntity>;
     Task<Result> BulkUpsertAsync(TEntity[] entities, string pivot, CancellationToken cancellationToken);
+    Task<Result> DeleteAsync(TEntity entity, CancellationToken cancellationToken);
+    Task<Result> DeleteAsync(TEntity[] entities, CancellationToken cancellationToken);
+    Task<int> CountBySpecificationAsync(Ardalis.Specification.ISpecification<TEntity> specification, bool includeInactive, CancellationToken cancellationToken);
+    Task<decimal> AverageBySpecificationAsync(Ardalis.Specification.ISpecification<TEntity> specification, Expression<Func<TEntity, decimal>> selector, bool includeInactive, CancellationToken cancellationToken);
 }

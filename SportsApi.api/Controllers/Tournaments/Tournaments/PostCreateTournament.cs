@@ -9,6 +9,7 @@ using Swashbuckle.AspNetCore.Annotations;
 
 namespace SportsApi.api.Controllers.Tournaments.Tournaments;
 
+[ApiController]
 [Authorize]
 [DynamicPermission]
 public class PostCreateTournament(IMediator mediator) : EndpointBaseAsync
