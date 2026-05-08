@@ -7,12 +7,13 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="Persistence\" />
+      <Folder Include="Persistence\Core\EntityFramework\Migrations\" />
       <Folder Include="Services\" />
     </ItemGroup>
 
     <ItemGroup>
       <PackageReference Include="Ardalis.Specification" Version="9.3.1" />
+      <PackageReference Include="Ardalis.Specification.EntityFrameworkCore" Version="9.3.1" />
       <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.15" />
       <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.15" />
       <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.15">

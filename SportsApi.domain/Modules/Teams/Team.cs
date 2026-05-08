@@ -6,12 +6,9 @@ namespace SportsApi.domain.Modules.Teams;
 
 public class Team : BaseEntity
 {
-    public string Name { get; set; } = null!;
-    public string? LogoUrl { get; set; }
+    public string DefaultName { get; set; } = null!;
+    public string? DefaultLogoUrl { get; set; }
     
-    public Guid TournamentId { get; set; }
-    public Tournament Tournament { get; set; } = null!;
-    
-    public ICollection<Roster> Rosters { get; set; } = new List<Roster>();
-    public ICollection<Match> Matches { get; set; } = new List<Match>();
+    public ICollection<TeamParticipation>? TeamParticipations { get; set; } 
+    public ICollection<Roster>? Rosters { get; set; }
 }

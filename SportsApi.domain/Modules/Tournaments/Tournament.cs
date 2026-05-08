@@ -14,5 +14,5 @@ public class Tournament : BaseEntity
     public string? LogoUrl { get; set; }
     public string? BannerUrl { get; set; }
     
-    public ICollection<Team> Teams { get; set; } = new List<Team>();
+    public ICollection<TeamParticipation>? TeamsParticipations { get; set; } = new List<TeamParticipation>();
 }
