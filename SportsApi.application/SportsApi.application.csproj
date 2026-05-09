@@ -11,7 +11,6 @@
       <Folder Include="Modules\Matches\Matches\" />
       <Folder Include="Modules\Teams\Players\" />
       <Folder Include="Modules\Teams\Teams\" />
-      <Folder Include="Modules\Tournaments\Tournaments\Commands\" />
     </ItemGroup>
 
     <ItemGroup>
