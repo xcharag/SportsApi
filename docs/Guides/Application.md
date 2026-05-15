@@ -148,9 +148,57 @@ public class GetTournamentsQueryHandler(IRepository<Tournament> repository)
 
 ## Existing Commands / Queries
 
-| Module | Operation | Type | Route |
+### Tournaments module
+
+| Aggregate | Operation | Type | Route |
 |---|---|---|---|
 | Tournaments | `PostCreateTournament` | Command | `POST /api/v1/tournaments` |
+| Tournaments | `PutUpdateTournament` | Command | `PUT /api/v1/tournaments` |
+| Tournaments | `DeleteTournament` | Command | `DELETE /api/v1/tournaments/{id}` |
+| Tournaments | `GetAllTournaments` | Query | `GET /api/v1/tournaments` |
+| Tournaments | `GetTournamentById` | Query | `GET /api/v1/tournaments/{id}` |
+| TeamParticipations | `PostCreateTeamParticipation` | Command | `POST /api/v1/team-participations` |
+| TeamParticipations | `RegisterTeams` *(batch)* | Command | `POST /api/v1/tournaments/{tournamentId}/team-participations` |
+| TeamParticipations | `PutUpdateTeamParticipation` | Command | `PUT /api/v1/team-participations` |
+| TeamParticipations | `DeleteTeamParticipation` | Command | `DELETE /api/v1/team-participations/{id}` |
+| TeamParticipations | `GetAllTeamParticipations` | Query | `GET /api/v1/team-participations` |
+| TeamParticipations | `GetTeamParticipationById` | Query | `GET /api/v1/team-participations/{id}` |
+| RoundsClassified | `GetAllRoundsClassified` | Query | `GET /api/v1/rounds-classified` |
+| RoundsClassified | `GetRoundsClassifiedById` | Query | `GET /api/v1/rounds-classified/{id}` |
 
-> More commands and queries will be added as the domain modules (`Matches`, `Teams`, `Players`) are implemented.
+### Teams module
+
+| Aggregate | Operation | Type | Route |
+|---|---|---|---|
+| Teams | `PostCreateTeam` | Command | `POST /api/v1/teams` |
+| Teams | `PutUpdateTeam` | Command | `PUT /api/v1/teams` |
+| Teams | `DeleteTeam` | Command | `DELETE /api/v1/teams/{id}` |
+| Teams | `GetAllTeams` | Query | `GET /api/v1/teams` |
+| Teams | `GetTeamById` | Query | `GET /api/v1/teams/{id}` |
+| Players | `PostCreatePlayer` | Command | `POST /api/v1/players` |
+| Players | `PutUpdatePlayer` | Command | `PUT /api/v1/players` |
+| Players | `DeletePlayer` | Command | `DELETE /api/v1/players/{id}` |
+| Players | `GetAllPlayers` | Query | `GET /api/v1/players` |
+| Players | `GetPlayerById` | Query | `GET /api/v1/players/{id}` |
+| Rosters | `PostCreateRoster` | Command | `POST /api/v1/rosters` |
+| Rosters | `EnrollPlayers` *(batch)* | Command | `POST /api/v1/team-participations/{teamParticipationId}/rosters` |
+| Rosters | `PutUpdateRoster` | Command | `PUT /api/v1/rosters` |
+| Rosters | `DeleteRoster` | Command | `DELETE /api/v1/rosters/{id}` |
+| Rosters | `GetAllRosters` | Query | `GET /api/v1/rosters` |
+| Rosters | `GetRosterById` | Query | `GET /api/v1/rosters/{id}` |
+
+### Matches module
+
+| Aggregate | Operation | Type | Route |
+|---|---|---|---|
+| Matches | `PostCreateMatch` | Command | `POST /api/v1/matches` |
+| Matches | `PutUpdateMatch` | Command | `PUT /api/v1/matches` |
+| Matches | `DeleteMatch` | Command | `DELETE /api/v1/matches/{id}` |
+| Matches | `GetAllMatches` | Query | `GET /api/v1/matches` |
+| Matches | `GetMatchById` | Query | `GET /api/v1/matches/{id}` |
+| Events | `PostCreateEvent` | Command | `POST /api/v1/events` |
+| Events | `PutUpdateEvent` | Command | `PUT /api/v1/events` |
+| Events | `DeleteEvent` | Command | `DELETE /api/v1/events/{id}` |
+| Events | `GetAllEvents` | Query | `GET /api/v1/events` |
+| Events | `GetEventById` | Query | `GET /api/v1/events/{id}` |
 

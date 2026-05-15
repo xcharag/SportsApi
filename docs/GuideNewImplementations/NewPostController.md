@@ -205,3 +205,51 @@ public class PostCreateTournament(IMediator mediator) : EndpointBaseAsync
 - [ ] `[SwaggerOperation(Tags)]` set
 - [ ] `[ProducesResponseType]` for `201` and `400` added
 
+---
+
+## Variant — Batch creation under a parent resource
+
+When a POST creates multiple child records under a parent (e.g. registering several teams into a tournament), follow REST conventions and put the **parent ID in the route**, not the body:
+
+```
+POST /api/v1/tournaments/{tournamentId}/team-participations
+POST /api/v1/team-participations/{teamParticipationId}/rosters
+```
+
+### Pattern
+
+**1. Decorate the parent-ID property with `[JsonIgnore]`**
+
+```csharp
+public sealed record RegisterTeamsCommand : ICommand<RegisterTeamsCommandResult>
+{
+    /// <summary>Set by the controller from the route — not in the request body.</summary>
+    [JsonIgnore]
+    public Guid TournamentId { get; set; }
+
+    public List<RegisterTeamItem> Teams { get; set; } = [];
+}
+```
+
+**2. Inject the route value in the controller before dispatching**
+
+```csharp
+[HttpPost("api/v1/tournaments/{tournamentId}/team-participations")]
+public override async Task<ActionResult<RegisterTeamsCommandResult>> HandleAsync(
+    [FromBody] RegisterTeamsCommand request,
+    CancellationToken cancellationToken = default)
+{
+    if (RouteData.Values.TryGetValue("tournamentId", out var routeId)
+        && Guid.TryParse(routeId?.ToString(), out var tournamentId))
+    {
+        request.TournamentId = tournamentId;
+    }
+
+    var result = await mediator.SendCommandAsync<...>(...);
+    // ...
+}
+```
+
+**Why `[JsonIgnore]`?**  
+Swagger reads the command class to build the body schema. Without `[JsonIgnore]`, the parent ID appears as a body field — which is confusing when it is already in the URL. With it, Swagger shows it only as a required path parameter.
+

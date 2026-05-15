@@ -18,4 +18,5 @@ public class TeamParticipation : BaseEntity
     public ICollection<Match>? HomeMatches { get; set; }
     public ICollection<Match>? AwayMatches { get; set; }
     public ICollection<Roster>? Rosters { get; set; }
+    public ICollection<RoundsClassified>? RoundsClassified { get; set; }
 }

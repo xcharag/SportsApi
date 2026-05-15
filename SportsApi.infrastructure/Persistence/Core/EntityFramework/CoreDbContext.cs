@@ -14,6 +14,7 @@ public class CoreDbContext(DbContextOptions<CoreDbContext> options) : DbContext(
     public DbSet<Event> Events { get; set; }
     public DbSet<TeamParticipation> TeamParticipations { get; set; }
     public DbSet<Player> Players { get; set; }
+    public DbSet<RoundsClassified> RoundsClassified { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

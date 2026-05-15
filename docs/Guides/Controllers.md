@@ -48,25 +48,47 @@ public class PostCreateTournament(IMediator mediator) : EndpointBaseAsync
 }
 ```
 
+### Batch endpoints with a parent route parameter
+
+When a batch command creates child resources under a parent (e.g. enrolling players into a `TeamParticipation`), the parent ID comes from the route — **not** from the body. The command property is decorated with `[JsonIgnore]` so Swagger only shows it as a path parameter, and the controller injects it before dispatching:
+
+```csharp
+// In the command:
+[JsonIgnore]
+public Guid TeamParticipationId { get; set; }   // set by controller from route
+
+// In the controller:
+[HttpPost("api/v1/team-participations/{teamParticipationId}/rosters")]
+public override async Task<ActionResult<...>> HandleAsync(
+    [FromBody] EnrollPlayersCommand request,
+    CancellationToken cancellationToken = default)
+{
+    if (RouteData.Values.TryGetValue("teamParticipationId", out var routeId)
+        && Guid.TryParse(routeId?.ToString(), out var id))
+    {
+        request.TeamParticipationId = id;
+    }
+    // ...
+}
+```
+
 ---
 
 ## Folder Convention
 
-Endpoints are organized under `Controllers/` mirroring the domain module hierarchy. Each aggregate gets its own sub-folder:
-
 ```
 Controllers/
   Tournaments/
-    Tournaments/      ← aggregate: Tournament
-      PostCreateTournament.cs
-      GetTournamentById.cs     (example)
-      GetTournaments.cs        (example)
-  Matches/
-    Matches/          ← aggregate: Match
-    Events/           ← aggregate: Event
+    Tournaments/          ← Tournament CRUD
+    TeamParticipations/   ← TeamParticipation CRUD + batch RegisterTeams
+    RoundsClassified/     ← RoundsClassified read-only queries
   Teams/
-    Teams/            ← aggregate: Team
-    Players/          ← aggregate: Player (Roster)
+    Teams/                ← Team CRUD
+    Players/              ← Player CRUD
+    Rosters/              ← Roster CRUD + batch EnrollPlayers
+  Matches/
+    Matches/              ← Match CRUD
+    Events/               ← Event CRUD
 ```
 
 ---
@@ -145,9 +167,58 @@ public class PostCreateTournament(...) : ...
 
 ---
 
-## Existing Endpoints
+## All Endpoints
 
-| Method | Route | Endpoint Class | Module |
+### Tournaments
+
+| Method | Route | Endpoint Class | Swagger Tag |
 |---|---|---|---|
+| `GET` | `/api/v1/tournaments` | `GetAllTournaments` | Tournaments |
+| `GET` | `/api/v1/tournaments/{id}` | `GetTournamentById` | Tournaments |
 | `POST` | `/api/v1/tournaments` | `PostCreateTournament` | Tournaments |
+| `PUT` | `/api/v1/tournaments` | `PutUpdateTournament` | Tournaments |
+| `DELETE` | `/api/v1/tournaments/{id}` | `DeleteTournament` | Tournaments |
+| `GET` | `/api/v1/team-participations` | `GetAllTeamParticipations` | TeamParticipations |
+| `GET` | `/api/v1/team-participations/{id}` | `GetTeamParticipationById` | TeamParticipations |
+| `POST` | `/api/v1/team-participations` | `PostCreateTeamParticipation` | TeamParticipations |
+| `POST` | `/api/v1/tournaments/{tournamentId}/team-participations` | `PostTeamParticipations` *(batch)* | TeamParticipations |
+| `PUT` | `/api/v1/team-participations` | `PutUpdateTeamParticipation` | TeamParticipations |
+| `DELETE` | `/api/v1/team-participations/{id}` | `DeleteTeamParticipation` | TeamParticipations |
+| `GET` | `/api/v1/rounds-classified` | `GetAllRoundsClassified` | RoundsClassified |
+| `GET` | `/api/v1/rounds-classified/{id}` | `GetRoundsClassifiedById` | RoundsClassified |
 
+### Teams
+
+| Method | Route | Endpoint Class | Swagger Tag |
+|---|---|---|---|
+| `GET` | `/api/v1/teams` | `GetAllTeams` | Teams |
+| `GET` | `/api/v1/teams/{id}` | `GetTeamById` | Teams |
+| `POST` | `/api/v1/teams` | `PostCreateTeam` | Teams |
+| `PUT` | `/api/v1/teams` | `PutUpdateTeam` | Teams |
+| `DELETE` | `/api/v1/teams/{id}` | `DeleteTeam` | Teams |
+| `GET` | `/api/v1/players` | `GetAllPlayers` | Players |
+| `GET` | `/api/v1/players/{id}` | `GetPlayerById` | Players |
+| `POST` | `/api/v1/players` | `PostCreatePlayer` | Players |
+| `PUT` | `/api/v1/players` | `PutUpdatePlayer` | Players |
+| `DELETE` | `/api/v1/players/{id}` | `DeletePlayer` | Players |
+| `GET` | `/api/v1/rosters` | `GetAllRosters` | Rosters |
+| `GET` | `/api/v1/rosters/{id}` | `GetRosterById` | Rosters |
+| `POST` | `/api/v1/rosters` | `PostCreateRoster` | Rosters |
+| `POST` | `/api/v1/team-participations/{teamParticipationId}/rosters` | `PostRosters` *(batch)* | Rosters |
+| `PUT` | `/api/v1/rosters` | `PutUpdateRoster` | Rosters |
+| `DELETE` | `/api/v1/rosters/{id}` | `DeleteRoster` | Rosters |
+
+### Matches
+
+| Method | Route | Endpoint Class | Swagger Tag |
+|---|---|---|---|
+| `GET` | `/api/v1/matches` | `GetAllMatches` | Matches |
+| `GET` | `/api/v1/matches/{id}` | `GetMatchById` | Matches |
+| `POST` | `/api/v1/matches` | `PostCreateMatch` | Matches |
+| `PUT` | `/api/v1/matches` | `PutUpdateMatch` | Matches |
+| `DELETE` | `/api/v1/matches/{id}` | `DeleteMatch` | Matches |
+| `GET` | `/api/v1/events` | `GetAllEvents` | Events |
+| `GET` | `/api/v1/events/{id}` | `GetEventById` | Events |
+| `POST` | `/api/v1/events` | `PostCreateEvent` | Events |
+| `PUT` | `/api/v1/events` | `PutUpdateEvent` | Events |
+| `DELETE` | `/api/v1/events/{id}` | `DeleteEvent` | Events |

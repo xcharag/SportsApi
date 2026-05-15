@@ -48,7 +48,10 @@ Inherits from `DbContext`. Registers the following `DbSet<T>` properties:
 | DbSet | Entity |
 |---|---|
 | `Tournaments` | `Tournament` |
+| `TeamParticipations` | `TeamParticipation` |
+| `RoundsClassified` | `RoundsClassified` |
 | `Teams` | `Team` |
+| `Players` | `Player` |
 | `Rosters` | `Roster` |
 | `Matches` | `Match` |
 | `Events` | `Event` |

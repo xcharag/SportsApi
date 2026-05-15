@@ -1,4 +1,5 @@
 using SportsApi.domain.Abstractions.Entities;
+using SportsApi.domain.Enums;
 using SportsApi.domain.Enums.Status;
 using SportsApi.domain.Modules.Tournaments;
 
@@ -13,6 +14,7 @@ public class Match : BaseEntity
     public string? Field { get; set; }
     public string? Location { get; set; }
     public MatchStatus Status { get; set; } = MatchStatus.Pending;
+    public MatchRound Round { get; set; }
     public Guid? NewMatchId { get; set; }
     
     public Guid HomeTeamId { get; set; }

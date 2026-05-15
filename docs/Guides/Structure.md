@@ -30,13 +30,13 @@ SportsApi.api
 ## Project Responsibilities
 
 ### `SportsApi.domain`
-- Defines all domain **entities** (`Tournament`, `Team`, `Roster`, `Match`, `Event`).
+- Defines all domain **entities**: `Tournament`, `TeamParticipation`, `RoundsClassified`, `Team`, `Player`, `Roster`, `Match`, `Event`.
 - Contains all **abstractions** (interfaces) that the other layers depend on:
   - `IMediator`, `ICommand`, `IQuery`, `ICommandHandler`, `IQueryHandler`
   - `IRepository<T>`, `ICoreUnitOfWork`, `IBaseRepository<T>`
   - `ICurrentUser`, `IAuthMicroserviceClient`
   - `Result<T>`, `PaginationResult<T>`, `PaginationSpecification<T>`
-- Defines **enums**: `MatchStatus`, `EventType`, `FavorableTo`, `Module`.
+- Defines **enums**: `MatchRound`, `MatchStatus`, `EventType`, `FavorableTo`, `Module`.
 - Contains **exceptions**: `DomainConflictException`.
 - Has **zero infrastructure dependencies**.
 
@@ -80,11 +80,11 @@ Abstractions/
 Enums/
   Status/         MatchStatus
   Types/          EventType
-  FavorableTo, Module
+  FavorableTo, MatchRound, Module
 Modules/
   Matches/        Match, Event
-  Teams/          Team, Roster
-  Tournaments/    Tournament
+  Teams/          Team, Player, Roster
+  Tournaments/    Tournament, TeamParticipation, RoundsClassified
 ```
 
 ### `SportsApi.application`
@@ -92,17 +92,49 @@ Modules/
 Modules/
   Tournaments/
     Tournaments/
-      Commands/
-        PostCreateTournament/   CreateTournamentCommand, Handler, Result
-  Matches/    (planned)
-  Teams/      (planned)
+      Commands/   PostCreateTournament, PutUpdateTournament, DeleteTournament
+      Filters/    AllTournamentsFilter, TournamentByIdFilter
+      Queries/    GetAllTournaments, GetTournamentById
+    TeamParticipations/
+      Commands/   PostCreateTeamParticipation, RegisterTeams, PutUpdateTeamParticipation, DeleteTeamParticipation
+      Filters/    AllTeamParticipationsFilter, TeamParticipationByIdFilter
+      Queries/    GetAllTeamParticipations, GetTeamParticipationById
+    RoundsClassified/
+      Filters/    AllRoundsClassifiedFilter, RoundsClassifiedByIdFilter
+      Queries/    GetAllRoundsClassified, GetRoundsClassifiedById
+  Teams/
+    Teams/
+      Commands/   PostCreateTeam, PutUpdateTeam, DeleteTeam
+      Filters/    AllTeamsFilter, TeamByIdFilter
+      Queries/    GetAllTeams, GetTeamById
+    Players/
+      Commands/   PostCreatePlayer, PutUpdatePlayer, DeletePlayer
+      Filters/    AllPlayersFilter, PlayerByIdFilter
+      Queries/    GetAllPlayers, GetPlayerById
+    Rosters/
+      Commands/   PostCreateRoster, EnrollPlayers, PutUpdateRoster, DeleteRoster
+      Filters/    AllRostersFilter, RosterByIdFilter
+      Queries/    GetAllRosters, GetRosterById
+  Matches/
+    Matches/
+      Commands/   PostCreateMatch, PutUpdateMatch, DeleteMatch
+      Filters/    AllMatchesFilter, MatchByIdFilter
+      Queries/    GetAllMatches, GetMatchById
+    Events/
+      Commands/   PostCreateEvent, PutUpdateEvent, DeleteEvent
+      Filters/    AllEventsFilter, EventByIdFilter
+      Queries/    GetAllEvents, GetEventById
 ApplicationServiceExtensions.cs
 ```
 
 ### `SportsApi.infrastructure`
 ```
 Persistence/Core/EntityFramework/
-  Configurations/   BaseEntityConfiguration<T>, TournamentConfiguration
+  Configurations/   BaseEntityConfiguration<T>,
+                    TournamentConfiguration, TeamParticipationConfiguration,
+                    RoundsClassifiedConfiguration, TeamConfiguration,
+                    PlayerConfiguration, RosterConfiguration,
+                    MatchConfiguration, EventConfiguration
   Repositories/     EfRepository<T>
   CoreDbContext.cs
   EfUnitOfWork.cs
@@ -118,12 +150,25 @@ InfrastructureServiceExtension.cs
 ### `SportsApi.api`
 ```
 Controllers/
-  Tournaments/Tournaments/  PostCreateTournament
-  Matches/Matches/          (planned)
-  Matches/Events/           (planned)
-  Teams/Teams/              (planned)
-  Teams/Players/            (planned)
+  Tournaments/
+    Tournaments/         GetAllTournaments, GetTournamentById, PostCreateTournament,
+                         PutUpdateTournament, DeleteTournament
+    TeamParticipations/  GetAllTeamParticipations, GetTeamParticipationById,
+                         PostCreateTeamParticipation, PostRegisterTeams (batch),
+                         PutUpdateTeamParticipation, DeleteTeamParticipation
+    RoundsClassified/    GetAllRoundsClassified, GetRoundsClassifiedById
+  Teams/
+    Teams/               GetAllTeams, GetTeamById, PostCreateTeam,
+                         PutUpdateTeam, DeleteTeam
+    Players/             GetAllPlayers, GetPlayerById, PostCreatePlayer,
+                         PutUpdatePlayer, DeletePlayer
+    Rosters/             GetAllRosters, GetRosterById, PostCreateRoster,
+                         PostEnrollPlayers (batch), PutUpdateRoster, DeleteRoster
+  Matches/
+    Matches/             GetAllMatches, GetMatchById, PostCreateMatch,
+                         PutUpdateMatch, DeleteMatch
+    Events/              GetAllEvents, GetEventById, PostCreateEvent,
+                         PutUpdateEvent, DeleteEvent
 Program.cs
 appsettings.json
 ```
-

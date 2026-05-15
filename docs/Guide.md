@@ -74,6 +74,16 @@ Swagger UI is available at `https://localhost:<port>/swagger` in development.
 | [New PUT endpoint](./GuideNewImplementations/NewPutController.md) | `PUT` | Partial update of an existing record |
 | [New DELETE endpoint](./GuideNewImplementations/NewDeleteController.md) | `DELETE` | Soft-delete (default) or hard-delete with `HardDelete` flag |
 
+### Frontend integration guides (module-by-module)
+
+| Guide | Description |
+|---|---|
+| [Tournaments](./Integration/Tournaments.md) | Tournament CRUD, batch team registration, round progression |
+| [Teams](./Integration/Teams.md) | Team catalogue CRUD, tournament history |
+| [Players](./Integration/Players.md) | Player catalogue CRUD, batch enrollment into rosters |
+| [Matches](./Integration/Matches.md) | Match CRUD, RoundsClassified queries, elimination flow |
+| [Events](./Integration/Events.md) | Match event recording and live tracking |
+
 ---
 
 ## Architecture Overview

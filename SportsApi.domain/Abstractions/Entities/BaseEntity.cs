@@ -11,5 +11,5 @@ public class BaseEntity : Entity
     public string? UpdatedBy { get; set; }
     public string? DeletedBy { get; set; }
     
-    public Guid TournamentIdOwner { get; set; }
+    public Guid? TournamentIdOwner { get; set; }
 }
