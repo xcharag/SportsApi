@@ -3,3 +3,10 @@ obj/
 /packages/
 riderModule.iml
 /_ReSharper.Caches/
+
+# Config files
+/appsettings.Development.json
+/appsettings.Production.json
+/appsettings.json
+/SportsApi.api/appsettings.json
+/SportsApi.api/appsettings.Development.json

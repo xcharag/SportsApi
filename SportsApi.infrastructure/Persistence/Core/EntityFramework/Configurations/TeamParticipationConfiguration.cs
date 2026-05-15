@@ -33,5 +33,10 @@ public class TeamParticipationConfiguration : BaseEntityConfiguration<TeamPartic
             .WithOne(m => m.AwayTeam)
             .HasForeignKey(m => m.AwayTeamId)
             .OnDelete(DeleteBehavior.Restrict);
+        
+        builder.HasMany(tp => tp.Rosters)
+            .WithOne(r => r.Team)
+            .HasForeignKey(r => r.TeamParticipationId)
+            .OnDelete(DeleteBehavior.Restrict);
     }
 }

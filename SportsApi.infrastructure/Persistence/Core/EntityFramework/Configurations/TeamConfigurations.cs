@@ -14,11 +14,6 @@ public class TeamConfigurations : BaseEntityConfiguration<Team>
             .IsRequired()
             .HasMaxLength(100);
         
-        builder.HasMany(t => t.Rosters)
-            .WithOne(r => r.Team)
-            .HasForeignKey(r => r.TeamId)
-            .OnDelete(DeleteBehavior.Restrict);
-        
         builder.HasMany(t => t.TeamParticipations)
             .WithOne(tp => tp.Team)
             .HasForeignKey(tp => tp.TeamId)

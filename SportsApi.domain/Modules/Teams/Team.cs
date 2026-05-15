@@ -10,5 +10,4 @@ public class Team : BaseEntity
     public string? DefaultLogoUrl { get; set; }
     
     public ICollection<TeamParticipation>? TeamParticipations { get; set; } 
-    public ICollection<Roster>? Rosters { get; set; }
 }

@@ -54,6 +54,8 @@ Swagger UI is available at `https://localhost:<port>/swagger` in development.
 
 ## Guide Index
 
+### Architecture & Concepts
+
 | Guide | Description |
 |---|---|
 | [Structure](./Guides/Structure.md) | Solution layout, project responsibilities, and folder conventions |
@@ -62,6 +64,15 @@ Swagger UI is available at `https://localhost:<port>/swagger` in development.
 | [Application](./Guides/Application.md) | How to add Commands and Queries; handler registration; existing operations |
 | [Controllers](./Guides/Controllers.md) | Ardalis ApiEndpoints pattern, authorization, Swagger, response conventions |
 | [Infrastructure](./Guides/Infrastructure.md) | EF Core/PostgreSQL, JWT auth, `ICurrentUser`, dynamic permissions, exception middleware |
+
+### Step-by-step: Adding new endpoints
+
+| Guide | HTTP verb | Description |
+|---|---|---|
+| [New GET endpoint](./GuideNewImplementations/NewGetController.md) | `GET` | Paginated list with filters + single record by ID |
+| [New POST endpoint](./GuideNewImplementations/NewPostController.md) | `POST` | Create a new record, return 201 + Location header |
+| [New PUT endpoint](./GuideNewImplementations/NewPutController.md) | `PUT` | Partial update of an existing record |
+| [New DELETE endpoint](./GuideNewImplementations/NewDeleteController.md) | `DELETE` | Soft-delete (default) or hard-delete with `HardDelete` flag |
 
 ---
 

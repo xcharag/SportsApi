@@ -14,8 +14,8 @@ public class RosterConfiguration : BaseEntityConfiguration<Roster>
             .HasMaxLength(20);
         
         builder.HasOne(r => r.Team)
-            .WithMany(t => t.Rosters)
-            .HasForeignKey(r => r.TeamId)
+            .WithMany(tp => tp.Rosters)
+            .HasForeignKey(r => r.TeamParticipationId)
             .OnDelete(DeleteBehavior.Restrict);
         
         builder.HasOne(r => r.Player)

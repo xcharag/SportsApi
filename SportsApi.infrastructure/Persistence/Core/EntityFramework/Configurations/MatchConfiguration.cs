@@ -11,7 +11,6 @@ public class MatchConfiguration : BaseEntityConfiguration<Match>
         builder.ToTable("Matches");
         
         builder.Property(m => m.Field)
-            .IsRequired()
             .HasMaxLength(30);
         
         builder.HasOne(m => m.HomeTeam)

@@ -18,13 +18,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Controllers\Matches\Events\" />
-      <Folder Include="Controllers\Matches\Matches\" />
-      <Folder Include="Controllers\Teams\Players\" />
-      <Folder Include="Controllers\Teams\Teams\" />
-    </ItemGroup>
-
-    <ItemGroup>
       <ProjectReference Include="..\SportsApi.application\SportsApi.application.csproj" />
       <ProjectReference Include="..\SportsApi.domain\SportsApi.domain.csproj" />
       <ProjectReference Include="..\SportsApi.infrastructure\SportsApi.infrastructure.csproj" />
