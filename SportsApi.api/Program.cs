@@ -24,6 +24,9 @@ builder.Services.AddControllers()
         options.JsonSerializerOptions.DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull;
         options.JsonSerializerOptions.IgnoreReadOnlyProperties = false;
         options.JsonSerializerOptions.IgnoreReadOnlyFields = false;
+        // Forces all incoming DateTime values to DateTimeKind.Utc so Npgsql can write
+        // them to "timestamp with time zone" columns without throwing ArgumentException.
+        options.JsonSerializerOptions.Converters.Add(new SportsApi.api.Infrastructure.UtcDateTimeConverter());
     });
 
 var sisApiBase = builder.Configuration["SisApi:BaseUrl"] ?? "https://sisapi.microcom-ti.com";

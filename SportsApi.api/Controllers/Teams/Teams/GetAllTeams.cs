@@ -10,8 +10,7 @@ using Swashbuckle.AspNetCore.Annotations;
 namespace SportsApi.api.Controllers.Teams.Teams;
 
 [ApiController]
-[Authorize]
-[DynamicPermission]
+[AllowAnonymous]
 public class GetAllTeams(IMediator mediator) : EndpointBaseAsync
     .WithRequest<AllTeamsQuery>
     .WithActionResult<AllTeamsQueryResult>

@@ -123,6 +123,12 @@ Content-Type: application/json
 
 **Response `201`**
 
+> **Auto-score side-effect:** When `eventType = 0` (Goal), the backend automatically increments the parent match's score:
+> - `favorableTo = 0` (Home) → `scoreHomeTeam += 1`
+> - `favorableTo = 1` (Away) → `scoreAwayTeam += 1`
+> 
+> The score update is atomic (same database transaction as the event insert). Any clients subscribed to the match's SSE stream (`GET /api/v1/matches/{matchId}/live`) will receive a real-time `update` event of type `"score"` immediately after the event is recorded.
+
 ---
 
 ## 4. Update Event

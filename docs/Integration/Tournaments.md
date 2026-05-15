@@ -87,9 +87,14 @@ Content-Type: application/json
   "startDate": "2026-01-10T00:00:00Z",
   "endDate": "2026-05-20T00:00:00Z",
   "logoUrl": null,
-  "bannerUrl": null
+  "bannerUrl": null,
+  "teamsPerGroupThatClassify": 2
 }
 ```
+
+| Field | Type | Required | Description |
+|---|---|---|---|
+| `teamsPerGroupThatClassify` | int | No (default 2) | Number of teams per group that advance to the knockout stage |
 
 **Response `201`**
 ```json
@@ -188,6 +193,7 @@ Content-Type: application/json
 | `teams[].name` | string | Yes | Display name for this tournament (can differ from the global `defaultName`) |
 | `teams[].logoUrl` | string? | No | Override logo for this tournament season |
 | `teams[].roundKey` | string | Yes | Group/bracket key: `"A"`, `"B"`, `"C"` in group stage; `"AA"`, `"AB"` from R16 onwards |
+| `teams[].nextRoundKey` | string? | No | The bracket slot the winner of this team's R16 match will occupy. Required for knockout seeding. |
 | `teams[].groupPosition` | int? | No | Seed position within the group (reserved for future auto-match generation) |
 
 **Response `201`**
@@ -218,37 +224,119 @@ Content-Type: application/json
 ```
 
 > **Note:** Each team gets one `TeamParticipation` + one `RoundsClassified` entry with `round = Group (1)`.  
-> To advance teams to later rounds (R16, Quarter-Finals...) soft-delete the eliminated team's `RoundsClassified` entry.
+> The `nextRoundKey` value is stored on the `RoundsClassified` entry and is used by the **auto-advance** logic when a knockout match finishes.
 
 ---
 
-## 7. Get Team Participations for a Tournament
+## 9. Group Stage Standings
+
+Returns group standings sorted by points, then goal difference, then goals scored.
 
 ```http
-GET /api/v1/team-participations?tournamentId={id}&page=1&perPage=50
+GET /api/v1/tournaments/{tournamentId}/standings
+GET /api/v1/tournaments/{tournamentId}/standings?groupKey=A
 Authorization: Bearer <token>
 ```
 
-Returns all teams registered in the specified tournament.
+**Query params**
+
+| Param | Type | Required | Description |
+|---|---|---|---|
+| `groupKey` | string | No | Filter to a single group (`A`, `B`, etc.). Omit for all groups. |
+
+**Response `200`**
+```json
+{
+  "groups": [
+    {
+      "groupKey": "A",
+      "standings": [
+        {
+          "teamParticipationId": "uuid",
+          "displayName": "FC Barcelona",
+          "logoUrl": null,
+          "played": 3,
+          "won": 2,
+          "drawn": 1,
+          "lost": 0,
+          "goalsFor": 7,
+          "goalsAgainst": 2,
+          "goalDifference": 5,
+          "points": 7
+        }
+      ]
+    }
+  ]
+}
+```
 
 ---
 
-## 8. Get Active Teams per Round
+## 10. Playoff Bracket
+
+Returns the knockout bracket for rounds R16 through Final. Each round contains slots; each slot has a home entry, away entry, the match (if created), and the winner (if the match is finished).
 
 ```http
-GET /api/v1/rounds-classified?tournamentId={id}&round=2&page=1&perPage=50
+GET /api/v1/tournaments/{tournamentId}/bracket
 Authorization: Bearer <token>
 ```
 
-Returns only `active=true` entries by default (teams still competing).
+**Response `200`**
+```json
+{
+  "rounds": [
+    {
+      "round": 2,
+      "roundName": "Round of 16",
+      "slots": [
+        {
+          "winnerAdvancesTo": "QF-1",
+          "homeEntry": { "teamParticipationId": "uuid", "displayName": "FC Barcelona", "logoUrl": null, "roundKey": "R16-1", "isActive": true },
+          "awayEntry": { "teamParticipationId": "uuid", "displayName": "Real Madrid", "logoUrl": null, "roundKey": "R16-2", "isActive": true },
+          "match": { "id": "uuid", "homeScore": 2, "awayScore": 1, "status": 2 },
+          "winner": { "teamParticipationId": "uuid", "displayName": "FC Barcelona", "roundKey": "R16-1", "isActive": true }
+        }
+      ]
+    }
+  ]
+}
+```
 
-| `round` value | Stage |
-|---|---|
-| 1 | Group |
-| 2 | R16 |
-| 3 | Quarter-Finals |
-| 4 | Semi-Finals |
-| 5 | Final |
+---
+
+## 11. Top Scorers
+
+Returns the top scorers for the tournament ranked by goals (dense rank — tied players share the same rank).
+
+```http
+GET /api/v1/tournaments/{tournamentId}/top-scorers?limit=10
+Authorization: Bearer <token>
+```
+
+**Query params**
+
+| Param | Type | Required | Description |
+|---|---|---|---|
+| `limit` | int | No (default 10) | Maximum rows to return |
+
+**Response `200`**
+```json
+{
+  "topScorers": [
+    {
+      "rank": 1,
+      "playerId": "uuid",
+      "playerName": "Lionel Messi",
+      "rosterId": "uuid",
+      "teamParticipationId": "uuid",
+      "teamName": "FC Barcelona",
+      "shirtName": "MESSI",
+      "shirtNumber": 10,
+      "goals": 7
+    }
+  ]
+}
+```
 
 ---
 
@@ -259,16 +347,28 @@ Returns only `active=true` entries by default (teams still competing).
    → GET /api/v1/tournaments
 
 2. Create tournament
-   → POST /api/v1/tournaments
+   → POST /api/v1/tournaments  (include teamsPerGroupThatClassify)
 
 3. Tournament setup — "Register Teams" step
    → GET /api/v1/teams  (show multi-select list)
-   → POST /api/v1/tournaments/{tournamentId}/team-participations  (confirm selection)
+   → POST /api/v1/tournaments/{tournamentId}/team-participations  (include nextRoundKey per team for knockout seeding)
 
 4. View registered teams / round bracket
    → GET /api/v1/team-participations?tournamentId={id}
    → GET /api/v1/rounds-classified?tournamentId={id}&round=1
 
-5. Advance to next round (eliminate losers)
-   → DELETE /api/v1/rounds-classified/{id}  (soft-delete = team eliminated)
+5. Group stage standings
+   → GET /api/v1/tournaments/{id}/standings
+
+6. Playoff bracket view
+   → GET /api/v1/tournaments/{id}/bracket
+
+7. Top scorers widget
+   → GET /api/v1/tournaments/{id}/top-scorers?limit=5
+
+8. Advance to next round (knockout) — happens automatically
+   When a knockout match status → Finished:
+     - Backend promotes winner's RC to next round (using NextRoundKey)
+     - Backend soft-deletes loser's RC (Active=false)
+   No frontend action required.
 ```

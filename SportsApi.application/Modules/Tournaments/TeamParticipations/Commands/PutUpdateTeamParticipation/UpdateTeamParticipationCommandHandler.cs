@@ -25,7 +25,7 @@ public class UpdateTeamParticipationCommandHandler(
         if (command.Name    is not null) entity.Name    = command.Name;
         if (command.LogoUrl is not null) entity.LogoUrl = command.LogoUrl;
 
-        entity.UpdatedAt = DateTime.Now;
+        entity.UpdatedAt = DateTime.UtcNow;
         entity.UpdatedBy = currentUser.Username;
 
         var updateResult = await repository.UpdateAsync(entity, cancellationToken);

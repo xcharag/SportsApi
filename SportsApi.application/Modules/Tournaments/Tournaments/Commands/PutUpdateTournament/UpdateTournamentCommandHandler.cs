@@ -37,8 +37,10 @@ public class UpdateTournamentCommandHandler(
             entity.LogoUrl = command.LogoUrl;
         if (command.BannerUrl is not null)
             entity.BannerUrl = command.BannerUrl;
+        if (command.TeamsPerGroupThatClassify is not null)
+            entity.TeamsPerGroupThatClassify = command.TeamsPerGroupThatClassify.Value;
         
-        entity.UpdatedAt = DateTime.Now;
+        entity.UpdatedAt = DateTime.UtcNow;
         entity.UpdatedBy = username;
         
         var updateResult = await repository.UpdateAsync(entity, cancellationToken);

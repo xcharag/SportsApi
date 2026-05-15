@@ -12,7 +12,9 @@ using SportsApi.domain.Abstractions.Persistence;
 using SportsApi.infrastructure.Persistence.Core.EntityFramework;
 using SportsApi.infrastructure.Persistence.Core.EntityFramework.Repositories;
 using SportsApi.infrastructure.Services.Auth;
+using SportsApi.infrastructure.Services.Live;
 using SportsApi.infrastructure.Services.Messaging;
+using IMatchLiveHub = SportsApi.infrastructure.Services.Live.IMatchLiveHub;
 
 namespace SportsApi.infrastructure;
 
@@ -60,9 +62,11 @@ public static class InfrastructureServiceExtensions
                         var token = context.Request.Cookies["accessToken"];
 
                         if (string.IsNullOrWhiteSpace(token))
-                        {
                             token = context.Request.Headers["Authorization"].FirstOrDefault()?.Split(' ').Last();
-                        }
+
+                        // SSE clients cannot set headers; allow token in query string
+                        if (string.IsNullOrWhiteSpace(token))
+                            token = context.Request.Query["access_token"];
 
                         if (!string.IsNullOrWhiteSpace(token))
                             context.Token = token;
@@ -127,9 +131,11 @@ public static class InfrastructureServiceExtensions
                         var token = context.Request.Cookies["accessToken"];
 
                         if (string.IsNullOrWhiteSpace(token))
-                        {
                             token = context.Request.Headers["Authorization"].FirstOrDefault()?.Split(' ').Last();
-                        }
+
+                        // SSE clients cannot set headers; allow token in query string
+                        if (string.IsNullOrWhiteSpace(token))
+                            token = context.Request.Query["access_token"];
 
                         if (!string.IsNullOrWhiteSpace(token))
                             context.Token = token;
@@ -173,6 +179,9 @@ public static class InfrastructureServiceExtensions
         services.AddAuthorization();
         services.AddSingleton<IAuthorizationPolicyProvider, PermissionPolicyProvider>();
         services.AddSingleton<IAuthorizationHandler, PermissionAuthorizationHandler>();
+        services.AddSingleton<MatchLiveHub>();
+        services.AddSingleton<IMatchLiveHub>(p => p.GetRequiredService<MatchLiveHub>());
+        services.AddSingleton<SportsApi.domain.Abstractions.Live.IMatchLiveHub>(p => p.GetRequiredService<MatchLiveHub>());
 
         services.AddHttpContextAccessor();
         services.AddScoped<ICurrentUser, CurrentUserService>();

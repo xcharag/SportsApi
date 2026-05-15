@@ -25,7 +25,7 @@ public class UpdateEventCommandHandler(
         if (command.FavorableTo is not null) entity.FavorableTo = command.FavorableTo.Value;
         if (command.EventType   is not null) entity.EventType   = command.EventType.Value;
 
-        entity.UpdatedAt = DateTime.Now;
+        entity.UpdatedAt = DateTime.UtcNow;
         entity.UpdatedBy = currentUser.Username;
 
         var updateResult = await repository.UpdateAsync(entity, cancellationToken);

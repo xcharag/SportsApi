@@ -27,5 +27,7 @@ public class RegisterTeamItem
     public string  RoundKey      { get; set; } = string.Empty;
     /// <summary>Seed / position within the group (optional).</summary>
     public int?    GroupPosition { get; set; }
+    /// <summary>The RoundKey this team advances to if they qualify (e.g. "AA" for the first R16 slot).</summary>
+    public string? NextRoundKey  { get; set; }
 }
 

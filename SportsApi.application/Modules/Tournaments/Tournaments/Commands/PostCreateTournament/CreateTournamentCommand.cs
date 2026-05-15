@@ -10,4 +10,6 @@ public sealed record CreateTournamentCommand : ICommand<CreateTournamentCommandR
     public DateTime EndDate { get; set; }
     public string? LogoUrl { get; set; }
     public string? BannerUrl { get; set; }
+    /// <summary>How many teams per group advance to knockout. Default 2.</summary>
+    public int TeamsPerGroupThatClassify { get; set; } = 2;
 }

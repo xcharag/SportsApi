@@ -14,6 +14,9 @@ public class RoundsClassifiedConfiguration : BaseEntityConfiguration<RoundsClass
             .IsRequired()
             .HasMaxLength(50);
 
+        builder.Property(r => r.NextRoundKey)
+            .HasMaxLength(50);
+
         builder.Property(r => r.Round)
             .IsRequired();
 

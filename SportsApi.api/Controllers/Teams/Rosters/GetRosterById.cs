@@ -10,8 +10,7 @@ using Swashbuckle.AspNetCore.Annotations;
 namespace SportsApi.api.Controllers.Teams.Rosters;
 
 [ApiController]
-[Authorize]
-[DynamicPermission]
+[AllowAnonymous]
 public class GetRosterById(IMediator mediator) : EndpointBaseAsync
     .WithRequest<RosterByIdQuery>
     .WithActionResult<RosterByIdQueryResult>

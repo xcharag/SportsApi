@@ -354,6 +354,10 @@ namespace SportsApi.infrastructure.Persistence.Core.EntityFramework.Migrations.P
                     b.Property<int?>("GroupPosition")
                         .HasColumnType("integer");
 
+                    b.Property<string>("NextRoundKey")
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
+
                     b.Property<int>("Round")
                         .HasColumnType("integer");
 
@@ -488,6 +492,11 @@ namespace SportsApi.infrastructure.Persistence.Core.EntityFramework.Migrations.P
 
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("TeamsPerGroupThatClassify")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasDefaultValue(2);
 
                     b.Property<Guid?>("TournamentIdOwner")
                         .HasColumnType("uuid");

@@ -14,5 +14,11 @@ public class UpdateMatchCommand : ICommand<UpdateMatchCommandResult>
     public int?         ScoreHomeTeam { get; set; }
     public int?         ScoreAwayTeam { get; set; }
     public Guid?        NewMatchId    { get; set; }
+    /// <summary>
+    /// Optional override for the winner of a knockout match (for penalty shootouts / admin correction).
+    /// Must be either the HomeTeamId or AwayTeamId of this match.
+    /// If omitted, the winner is determined by score when Status is set to Finished.
+    /// </summary>
+    public Guid?        ManualWinnerId { get; set; }
 }
 

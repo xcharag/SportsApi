@@ -9,8 +9,7 @@ using Swashbuckle.AspNetCore.Annotations;
 namespace SportsApi.api.Controllers.Tournaments.RoundsClassified;
 
 [ApiController]
-[Authorize]
-[DynamicPermission]
+[AllowAnonymous]
 public class GetRoundsClassifiedById(IMediator mediator) : EndpointBaseAsync
     .WithRequest<RoundsClassifiedByIdQuery>
     .WithActionResult<RoundsClassifiedByIdQueryResult>

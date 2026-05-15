@@ -11,4 +11,5 @@ public class UpdateTournamentCommand : ICommand<UpdateTournamentCommandResult>
     public DateTime? EndDate { get; set; }
     public string? LogoUrl { get; set; }
     public string? BannerUrl { get; set; }
+    public int? TeamsPerGroupThatClassify { get; set; }
 }

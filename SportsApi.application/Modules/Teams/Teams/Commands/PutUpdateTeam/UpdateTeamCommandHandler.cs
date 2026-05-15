@@ -24,7 +24,7 @@ public class UpdateTeamCommandHandler(
         if (command.DefaultName    is not null) entity.DefaultName    = command.DefaultName;
         if (command.DefaultLogoUrl is not null) entity.DefaultLogoUrl = command.DefaultLogoUrl;
 
-        entity.UpdatedAt = DateTime.Now;
+        entity.UpdatedAt = DateTime.UtcNow;
         entity.UpdatedBy = currentUser.Username;
 
         var updateResult = await repository.UpdateAsync(entity, cancellationToken);

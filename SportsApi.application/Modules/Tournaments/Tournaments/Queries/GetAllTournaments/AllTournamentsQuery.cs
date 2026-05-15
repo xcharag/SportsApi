@@ -4,8 +4,8 @@ namespace SportsApi.application.Modules.Tournaments.Tournaments.Queries.GetAllTo
 
 public class AllTournamentsQuery : IQuery<AllTournamentsQueryResult>
 {
-    public int Page { get; set; }
-    public int PerPage { get; set; }
+    public int Page { get; set; } = 1;
+    public int PerPage { get; set; } = 20;
     public string? Name { get; set; }
     public DateTime? InitDate { get; set; }
     public DateTime? EndDate { get; set; }

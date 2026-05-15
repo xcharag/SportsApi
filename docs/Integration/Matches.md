@@ -144,11 +144,23 @@ Content-Type: application/json
   "status": 2,
   "round": 1,
   "homeTeamId": "team-participation-uuid-1",
-  "awayTeamId": "team-participation-uuid-2"
+  "awayTeamId": "team-participation-uuid-2",
+  "manualWinnerId": null
 }
 ```
 
+| Field | Type | Description |
+|---|---|---|
+| `status` | int | `0` Pending, `1` InGame, `2` Finished, `3` Cancelled |
+| `manualWinnerId` | uuid? | Override winner for penalty shoot-outs. **Required** when a knockout round match ends in a draw (equal scores). Must be the `TeamParticipationId` of the winning team. |
+
 **Response `200`**
+
+> **Auto-advance side-effect:** When `status` is set to `Finished` for a knockout round match (R16, QF, SF, Final), the backend automatically:
+> 1. Promotes the winning team's `RoundsClassified` to the next bracket slot (using `NextRoundKey`).
+> 2. Soft-deletes the losing team's `RoundsClassified` entry.
+> 
+> If scores are tied and `manualWinnerId` is not provided, the update will fail with a validation error.
 
 ---
 
@@ -163,7 +175,64 @@ Authorization: Bearer <token>
 
 ---
 
-## 6. RoundsClassified — Who Is Still Active?
+## 6. Live Match Stream (SSE)
+
+Subscribe to real-time score and status updates for a match.
+
+```http
+GET /api/v1/matches/{matchId}/live?access_token=<token>
+```
+
+> **Auth note:** `EventSource` in browsers cannot set custom headers. Pass the JWT as a query parameter instead of the `Authorization` header.
+
+**Response headers**
+```
+Content-Type: text/event-stream
+Cache-Control: no-cache
+X-Accel-Buffering: no
+```
+
+**Events**
+
+| Event name | Triggered when |
+|---|---|
+| `heartbeat` | Immediately on connect |
+| `update` | Score changes or match status changes |
+
+**`update` payload shapes**
+
+*Score update (Goal event created):*
+```json
+{ "type": "score", "matchId": "uuid", "homeScore": 2, "awayScore": 1, "eventId": "uuid", "eventType": 0, "minute": 34, "favorableTo": 0 }
+```
+
+*Status update (match updated to InGame/Finished/etc.):*
+```json
+{ "type": "status", "matchId": "uuid", "status": "Finished", "homeScore": 2, "awayScore": 1 }
+```
+
+*Generic event (non-goal events — yellow card, free kick, etc.):*
+```json
+{ "type": "event", "matchId": "uuid", "eventId": "uuid", "eventType": 1, "minute": 55, "favorableTo": 1 }
+```
+
+**JavaScript usage**
+```js
+const token = localStorage.getItem('accessToken');
+const es = new EventSource(`/api/v1/matches/${matchId}/live?access_token=${token}`);
+
+es.addEventListener('update', (e) => {
+  const payload = JSON.parse(e.data);
+  console.log(payload.type, payload);
+});
+
+// Always clean up:
+es.close();
+```
+
+---
+
+## 7. RoundsClassified — Who Is Still Active?
 
 `RoundsClassified` determines which teams are **still competing** in the tournament. A team is eliminated when its `RoundsClassified` entry is soft-deleted (`active=false`).
 
@@ -228,16 +297,21 @@ Authorization: Bearer <token>
 1. Load tournament matches
    → GET /api/v1/matches?tournamentId={id}&round=1
 
-2. Open match detail
+2. Open match detail (public view)
    → GET /api/v1/matches/{id}  (includes team names + events)
+   → SSE: GET /api/v1/matches/{id}/live?access_token=<token>
+      (subscribe for real-time score/status updates)
 
-3. Create next-round matches
-   → GET /api/v1/rounds-classified?tournamentId={id}&round=1  (see top 2 per group, etc.)
-   → POST /api/v1/matches  (create R16 match with chosen teamParticipationIds)
+3. Start match (admin)
+   → PUT /api/v1/matches  { id, status: 1 (InGame) }
 
-4. Record final score
-   → PUT /api/v1/matches  (set scores + status = 2 Finished)
+4. Record events (admin)
+   → POST /api/v1/events  (each goal auto-increments the score)
 
-5. Eliminate loser
-   → DELETE /api/v1/rounds-classified/{id}  (soft-delete = team is out)
+5. Finalise match (admin)
+   → PUT /api/v1/matches  { id, status: 2 (Finished), manualWinnerId?: uuid if draw }
+   (backend auto-advances winner and eliminates loser)
+
+6. View updated bracket
+   → GET /api/v1/tournaments/{id}/bracket
 ```

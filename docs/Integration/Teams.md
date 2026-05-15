@@ -131,7 +131,50 @@ Default is soft-delete (`active=false`). Pass `hardDelete=true` for permanent re
 
 ---
 
-## 6. View Tournament History for a Team
+## 6. Team Profile
+
+Returns a full team profile including cross-tournament history, all-time top scorers, and aggregated career stats.
+
+```http
+GET /api/v1/teams/{id}/profile
+Authorization: Bearer <token>
+```
+
+**Response `200`**
+```json
+{
+  "teamId": "uuid",
+  "defaultName": "FC Barcelona",
+  "defaultLogoUrl": "https://cdn.example.com/barca.png",
+  "tournamentHistory": [
+    {
+      "tournamentId": "uuid",
+      "tournamentName": "Copa del Rey 2026",
+      "teamParticipationId": "uuid",
+      "participationName": "FC Barcelona",
+      "logoUrl": "https://cdn.example.com/barca.png",
+      "isChampion": true
+    }
+  ],
+  "topScorers": [
+    {
+      "playerId": "uuid",
+      "playerName": "Lionel Messi",
+      "totalGoals": 42
+    }
+  ],
+  "careerStats": {
+    "goals": 180,
+    "yellowCards": 35,
+    "redCards": 4,
+    "penalties": 12
+  }
+}
+```
+
+---
+
+## 7. View Tournament History for a Team (legacy)
 
 Use the TeamParticipations endpoint filtered by `teamId` to see all tournaments a team has entered:
 
@@ -158,8 +201,8 @@ Each result includes the `tournamentId`, the display `name` and `logoUrl` used f
    → GET /api/v1/teams  (show multi-select list)
    → POST /api/v1/tournaments/{tournamentId}/team-participations  (confirm selection)
 
-4. View a team's tournament history
-   → GET /api/v1/team-participations?teamId={id}
+4. View a team's full profile
+   → GET /api/v1/teams/{id}/profile  (history + career stats + top scorers)
 
 5. View a team's current round status in a tournament
    → GET /api/v1/rounds-classified?teamParticipationId={teamParticipationId}

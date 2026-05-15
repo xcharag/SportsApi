@@ -17,6 +17,10 @@ public class TournamentConfiguration : BaseEntityConfiguration<Tournament>
         builder.Property(t => t.Description)
             .HasMaxLength(2000);
         
+        builder.Property(t => t.TeamsPerGroupThatClassify)
+            .IsRequired()
+            .HasDefaultValue(2);
+        
         builder.HasMany(t => t.TeamsParticipations)
             .WithOne(t => t.Tournament)
             .HasForeignKey(t => t.TournamentId)

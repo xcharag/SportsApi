@@ -24,7 +24,7 @@ public class UpdateRosterCommandHandler(
         if (command.ShirtNumber is not null) entity.ShirtNumber = command.ShirtNumber;
         if (command.ShirtName   is not null) entity.ShirtName   = command.ShirtName;
 
-        entity.UpdatedAt = DateTime.Now;
+        entity.UpdatedAt = DateTime.UtcNow;
         entity.UpdatedBy = currentUser.Username;
 
         var updateResult = await repository.UpdateAsync(entity, cancellationToken);

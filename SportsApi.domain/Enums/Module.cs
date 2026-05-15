@@ -2,5 +2,5 @@ namespace SportsApi.domain.Enums;
 
 public enum Module
 {
-    SportsApi = 3
+    SportsApi = 2
 }

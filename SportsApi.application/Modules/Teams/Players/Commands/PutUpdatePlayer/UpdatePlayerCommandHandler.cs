@@ -26,7 +26,7 @@ public class UpdatePlayerCommandHandler(
         if (command.PhoneNumber is not null) entity.PhoneNumber = command.PhoneNumber;
         if (command.IsForeigner is not null) entity.IsForeigner = command.IsForeigner.Value;
 
-        entity.UpdatedAt = DateTime.Now;
+        entity.UpdatedAt = DateTime.UtcNow;
         entity.UpdatedBy = currentUser.Username;
 
         var updateResult = await repository.UpdateAsync(entity, cancellationToken);

@@ -4,17 +4,18 @@ using Microsoft.AspNetCore.Mvc;
 using SportsApi.application.Modules.Tournaments.Tournaments.Queries.GetAllTournaments;
 using SportsApi.domain.Abstractions.Messaging;
 using SportsApi.infrastructure.Authorization;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace SportsApi.api.Controllers.Tournaments.Tournaments;
 
 [ApiController]
-[Authorize]
-[DynamicPermission]
+[AllowAnonymous]
 public class GetAllTournaments(IMediator mediator) : EndpointBaseAsync
     .WithRequest<AllTournamentsQuery>
     .WithActionResult<AllTournamentsQueryResult>
 {
     [HttpGet("api/v1/tournaments")]
+    [SwaggerOperation(Tags = ["Tournaments"])]
     public override async Task<ActionResult<AllTournamentsQueryResult>> HandleAsync(
         [FromQuery] AllTournamentsQuery request,
         CancellationToken cancellationToken = default)

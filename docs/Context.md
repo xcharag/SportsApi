@@ -37,8 +37,16 @@ A `Player` can play for different teams in different tournaments (transfers, loa
 `RoundsClassified` is the source of truth for **which teams are still active** in a competition at a given round:
 - `Active = true` → team is still competing.
 - `Active = false` → team has been eliminated (soft-deleted).
-- `Round` / `RoundKey` identify the bracket position (e.g. Group "A", R16 match "AA").
+- `Round` / `RoundKey` identify the bracket position (e.g. Group `"A"`, R16 match `"AA"`).
+- `NextRoundKey` (string?) — the bracket slot this team would move into when they win (links to the next round's RC entry).
 - `GroupPosition` can be used later to seed automatic match generation.
+
+### Key new domain properties
+| Entity | Property | Description |
+|---|---|---|
+| `Tournament` | `TeamsPerGroupThatClassify` (int, default 2) | How many teams per group advance to the knockout stage |
+| `RoundsClassified` | `NextRoundKey` (string?) | Bracket slot the winner moves into (used by auto-advance logic) |
+| `Match` (Update only) | `ManualWinnerId` (Guid?) | Override winner for penalty shoot-outs; required when knockout match ends in a draw |
 
 ---
 
@@ -79,6 +87,8 @@ A `Player` can play for different teams in different tournaments (transfers, loa
 | POST | `/api/v1/players` | Create player |
 | PUT | `/api/v1/players` | Update player |
 | DELETE | `/api/v1/players/{id}` | Delete player |
+| **GET** | **`/api/v1/players/{id}/stats`** | **Aggregated stats for all tournaments (goals, cards…)** |
+| **GET** | **`/api/v1/players/{id}/profile`** | **Full player profile: teams played, career stats, event log** |
 | **POST** | **`/api/v1/team-participations/{teamParticipationId}/rosters`** | **Batch-enroll players into a TeamParticipation** |
 | GET | `/api/v1/rosters` | List roster entries |
 | GET | `/api/v1/rosters/{id}` | Get one roster entry |
@@ -94,6 +104,11 @@ A `Player` can play for different teams in different tournaments (transfers, loa
 | POST | `/api/v1/events` | Record an event |
 | PUT | `/api/v1/events` | Update an event |
 | DELETE | `/api/v1/events/{id}` | Delete an event |
+| **GET** | **`/api/v1/tournaments/{id}/standings`** | **Group stage standings (optional `?groupKey=A`)** |
+| **GET** | **`/api/v1/tournaments/{id}/bracket`** | **Playoff bracket (R16 → Final) with slot/match data** |
+| **GET** | **`/api/v1/tournaments/{id}/top-scorers`** | **Top scorers for a tournament (`?limit=N`)** |
+| **GET** | **`/api/v1/teams/{id}/profile`** | **Team profile: history, all-time top scorers, career stats** |
+| **GET** | **`/api/v1/matches/{id}/live`** | **SSE stream — real-time score + status updates (text/event-stream)** |
 
 ---
 
@@ -113,7 +128,11 @@ SportsApi.infrastructure → EF Core (PostgreSQL), JWT, DynamicPermissions, Medi
 - JWT Bearer tokens issued by **SISAPI** auth microservice.
 - All endpoints require `[Authorize]`.
 - Dynamic permission checks are applied globally via `DynamicPermissionGlobalFilter`.
-- Token can be sent as `Authorization: Bearer <token>` header **or** `accessToken` cookie.
+- Read-only public endpoints are decorated with `[SkipDynamicPermission]` and still validate the JWT (auth is still required).
+- Token can be sent as:
+  - `Authorization: Bearer <token>` header
+  - `accessToken` cookie
+  - `?access_token=<token>` query string — **SSE clients only** (browsers cannot set headers on `EventSource`)
 
 ---
 
@@ -126,4 +145,7 @@ SportsApi.infrastructure → EF Core (PostgreSQL), JWT, DynamicPermissions, Medi
 | RoundsClassified uses soft-delete for elimination | `Active=false` = eliminated; enables "still competing?" queries |
 | All entities use `Guid` PKs assigned client-side | Allows batching inserts with FK references in a single `SaveChangesAsync` |
 | Soft-delete as default | `[Authorize] + ?hardDelete=true` required for physical deletion |
+| Auto-advance on Match finish | When a knockout match status → `Finished`, the winning team's `RoundsClassified` is promoted to the next round using `NextRoundKey`; the loser's is soft-deleted |
+| Score auto-update on Goal event | Creating a `Goal` event increments `HomeScore` or `AwayScore` on the parent `Match` automatically |
+| SSE for live scores | `GET /api/v1/matches/{id}/live` streams JSON over `text/event-stream`; token passed via `?access_token=` because `EventSource` cannot set headers |
 

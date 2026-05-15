@@ -83,21 +83,24 @@ public class EfRepository<TEntity>(CoreDbContext dbContext)
         CancellationToken cancellationToken)
         where TPagination : PaginationSpecification<TEntity>
     {
+        var page = pagination.Page < 1 ? 1 : pagination.Page;
+        var perPage = pagination.PerPage < 1 ? 20 : pagination.PerPage;
+
         var queryable = dbSet.Where(x => x.Active).AsQueryable();
 
         var count = await queryable.WithSpecification(pagination).CountAsync(cancellationToken);
         var data = await queryable
             .WithSpecification(pagination)
-            .Skip((pagination.Page - 1) * pagination.PerPage)
-            .Take(pagination.PerPage)
+            .Skip((page - 1) * perPage)
+            .Take(perPage)
             .ToArrayAsync(cancellationToken);
 
         return new PaginationResult<TEntity>
         {
-            Page = pagination.Page,
-            PerPage = pagination.PerPage,
+            Page = page,
+            PerPage = perPage,
             Count = count,
-            TotalPages = count == 0 ? 0 : (int)Math.Ceiling((double)count / pagination.PerPage),
+            TotalPages = count == 0 ? 0 : (int)Math.Ceiling((double)count / perPage),
             Data = data
         };
     }

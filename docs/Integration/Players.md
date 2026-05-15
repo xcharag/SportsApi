@@ -223,6 +223,103 @@ Authorization: Bearer <token>
 
 ---
 
+## 9. Player Stats
+
+Returns aggregated stats for a player across all tournaments: goals, cards, and other event counts.
+
+```http
+GET /api/v1/players/{id}/stats
+Authorization: Bearer <token>
+```
+
+**Response `200`**
+```json
+{
+  "playerId": "uuid",
+  "fullName": "Lionel Martinez",
+  "career": {
+    "goals": 42,
+    "yellowCards": 5,
+    "redCards": 0,
+    "penalties": 3,
+    "offsides": 7,
+    "corners": 0,
+    "freeKicks": 12
+  },
+  "tournaments": [
+    {
+      "tournamentId": "uuid",
+      "tournamentName": "Copa del Rey 2026",
+      "teamParticipationId": "uuid",
+      "teamName": "FC Barcelona",
+      "shirtName": "MESSI",
+      "shirtNumber": 10,
+      "stats": {
+        "goals": 7,
+        "yellowCards": 1,
+        "redCards": 0,
+        "penalties": 1,
+        "offsides": 2,
+        "corners": 0,
+        "freeKicks": 3
+      }
+    }
+  ]
+}
+```
+
+---
+
+## 10. Player Profile
+
+Returns the full player profile: every team the player has played for, the events they produced in each team, and career-level totals.
+
+```http
+GET /api/v1/players/{id}/profile
+Authorization: Bearer <token>
+```
+
+**Response `200`**
+```json
+{
+  "playerId": "uuid",
+  "fullName": "Lionel Martinez",
+  "ci": "12345678",
+  "phoneNumber": "+1-555-0100",
+  "isForeigner": false,
+  "teams": [
+    {
+      "teamParticipationId": "uuid",
+      "teamName": "FC Barcelona",
+      "logoUrl": "https://cdn.example.com/barca.png",
+      "tournamentId": "uuid",
+      "tournamentName": "Copa del Rey 2026",
+      "shirtName": "MESSI",
+      "shirtNumber": 10,
+      "events": [
+        {
+          "eventId": "uuid",
+          "eventType": 0,
+          "minute": 34,
+          "matchId": "uuid"
+        }
+      ]
+    }
+  ],
+  "career": {
+    "goals": 42,
+    "yellowCards": 5,
+    "redCards": 0,
+    "penalties": 3,
+    "offsides": 7,
+    "corners": 0,
+    "freeKicks": 12
+  }
+}
+```
+
+---
+
 ## Typical Frontend Flow
 
 ```
@@ -242,4 +339,8 @@ Authorization: Bearer <token>
 
 5. Correct a shirt number / name
    → PUT /api/v1/rosters
+
+6. View player profile page
+   → GET /api/v1/players/{id}/profile  (teams, events, career)
+   → GET /api/v1/players/{id}/stats    (per-tournament stat breakdown)
 ```

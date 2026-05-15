@@ -26,7 +26,7 @@ public class DeleteTeamParticipationCommandHandler(
 
         if (command.HardDelete)
         {
-            entity.DeletedAt = DateTime.Now;
+            entity.DeletedAt = DateTime.UtcNow;
             entity.DeletedBy = username;
             var deleteResult = await repository.DeleteAsync(entity, cancellationToken);
             if (deleteResult.IsFailure)
@@ -35,7 +35,7 @@ public class DeleteTeamParticipationCommandHandler(
         else
         {
             entity.Active    = false;
-            entity.DeletedAt = DateTime.Now;
+            entity.DeletedAt = DateTime.UtcNow;
             entity.DeletedBy = username;
             var updateResult = await repository.UpdateAsync(entity, cancellationToken);
             if (updateResult.IsFailure)

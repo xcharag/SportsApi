@@ -78,11 +78,11 @@ Swagger UI is available at `https://localhost:<port>/swagger` in development.
 
 | Guide | Description |
 |---|---|
-| [Tournaments](./Integration/Tournaments.md) | Tournament CRUD, batch team registration, round progression |
-| [Teams](./Integration/Teams.md) | Team catalogue CRUD, tournament history |
-| [Players](./Integration/Players.md) | Player catalogue CRUD, batch enrollment into rosters |
-| [Matches](./Integration/Matches.md) | Match CRUD, RoundsClassified queries, elimination flow |
-| [Events](./Integration/Events.md) | Match event recording and live tracking |
+| [Tournaments](./Integration/Tournaments.md) | Tournament CRUD, batch team registration, standings, bracket, top scorers |
+| [Teams](./Integration/Teams.md) | Team catalogue CRUD, team profile endpoint |
+| [Players](./Integration/Players.md) | Player catalogue CRUD, batch enrollment, stats + profile endpoints |
+| [Matches](./Integration/Matches.md) | Match CRUD, auto-score on goal, auto-advance on finish, SSE live stream |
+| [Events](./Integration/Events.md) | Match event recording, auto-score update side-effect |
 
 ---
 
@@ -138,4 +138,41 @@ Swagger UI is available at `https://localhost:<port>/swagger` in development.
 4. **Application** — create `Command` + `CommandHandler` + `CommandResult` (or `Query` equivalents) in `SportsApi.application/Modules/<Module>/<Aggregate>/Commands/<VerbActionName>/`.
 5. **Endpoint** — create one file in `SportsApi.api/Controllers/<Module>/<Aggregate>/` inheriting `EndpointBaseAsync`.
 6. **No manual DI registration** — handlers are auto-discovered; repositories and the Unit of Work are generic and already registered.
+
+> **Exception — SSE endpoints**: Use plain `ControllerBase` (not Ardalis) when you need direct access to `HttpContext.Response.Body` for streaming. See `GetMatchLive.cs` for the reference implementation.
+
+---
+
+## Live Scores (SSE)
+
+The API supports real-time match updates via **Server-Sent Events**:
+
+```
+GET /api/v1/matches/{matchId}/live
+```
+
+- Returns `Content-Type: text/event-stream`.
+- Sends a `heartbeat` event on connect.
+- Streams `update` events as JSON whenever the score or match status changes.
+- Because `EventSource` in browsers cannot set custom headers, the JWT is accepted via the `?access_token=<token>` query parameter.
+- The `IMatchLiveHub` singleton (`SportsApi.infrastructure.Services.Live.MatchLiveHub`) manages channels per match using `ConcurrentDictionary<Guid, ConcurrentBag<Channel<string>>>`.
+- Handlers that publish updates inject `SportsApi.domain.Abstractions.Live.IMatchLiveHub` (the thin domain interface with just `Publish`).
+- The SSE controller injects `SportsApi.infrastructure.Services.Live.IMatchLiveHub` (which also exposes `Subscribe` / `Unsubscribe`).
+
+### Event payload shapes
+
+**Score update** (emitted when a `Goal` event is created):
+```json
+{ "type": "score", "matchId": "uuid", "homeScore": 2, "awayScore": 1, "eventId": "uuid", "eventType": 0, "minute": 34, "favorableTo": 0 }
+```
+
+**Status update** (emitted when match status changes):
+```json
+{ "type": "status", "matchId": "uuid", "status": "Finished", "homeScore": 2, "awayScore": 1 }
+```
+
+**Generic event** (emitted for non-goal events):
+```json
+{ "type": "event", "matchId": "uuid", "eventId": "uuid", "eventType": 1, "minute": 55, "favorableTo": 1 }
+```
 

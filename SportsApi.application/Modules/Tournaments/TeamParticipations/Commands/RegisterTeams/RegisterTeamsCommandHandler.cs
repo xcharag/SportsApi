@@ -46,6 +46,7 @@ public class RegisterTeamsCommandHandler(
                 Round               = MatchRound.Group,
                 RoundKey            = item.RoundKey,
                 GroupPosition       = item.GroupPosition,
+                NextRoundKey        = item.NextRoundKey,
                 CreatedBy           = username,
                 CreatedAt           = createdAt
             });

@@ -23,7 +23,9 @@ public class CreateTournamentCommandHandler(
             StartDate = command.StartDate,
             EndDate = command.EndDate,
             LogoUrl = command.LogoUrl,
-            BannerUrl = command.BannerUrl
+            BannerUrl = command.BannerUrl,
+            TeamsPerGroupThatClassify = command.TeamsPerGroupThatClassify,
+            CreatedBy = username
         };
 
         var saveResult = await repository.SaveAsync(entity, cancellationToken);
