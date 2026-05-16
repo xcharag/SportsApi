@@ -16,6 +16,9 @@ public class TeamProfileQueryResult : IQueryResult
 
     /// <summary>Career aggregated stats (goals, cards, etc.) for this team across all tournaments.</summary>
     public TeamCareerStats CareerStats { get; set; } = new();
+
+    /// <summary>Aggregated win/draw/loss record and goals across all finished matches.</summary>
+    public TeamRecord Record { get; set; } = new();
 }
 
 public class TeamTournamentHistory
@@ -43,3 +46,14 @@ public class TeamCareerStats
     public int RedCards    { get; set; }
     public int Penalties   { get; set; }
 }
+
+public class TeamRecord
+{
+    public int Played       { get; set; }
+    public int Won          { get; set; }
+    public int Drawn        { get; set; }
+    public int Lost         { get; set; }
+    public int GoalsFor     { get; set; }
+    public int GoalsAgainst { get; set; }
+}
+

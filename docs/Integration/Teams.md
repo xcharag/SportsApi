@@ -132,7 +132,7 @@ Default is soft-delete (`active=false`). Pass `hardDelete=true` for permanent re
 
 ## 6. Team Profile
 
-Returns a full team profile including cross-tournament history, all-time top scorers, and aggregated career stats.
+Returns a full team profile including cross-tournament history, all-time top scorers, aggregated career stats, and **win/draw/loss record**.
 
 ```http
 GET /api/v1/teams/{id}/profile
@@ -166,6 +166,14 @@ GET /api/v1/teams/{id}/profile
     "yellowCards": 35,
     "redCards": 4,
     "penalties": 12
+  },
+  "record": {
+    "played": 42,
+    "won": 24,
+    "drawn": 10,
+    "lost": 8,
+    "goalsFor": 76,
+    "goalsAgainst": 38
   }
 }
 ```

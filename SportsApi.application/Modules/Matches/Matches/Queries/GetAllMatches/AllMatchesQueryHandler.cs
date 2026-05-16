@@ -15,7 +15,7 @@ public class AllMatchesQueryHandler(IRepository<Match> repository)
     {
         var filter = new AllMatchesFilter(
             query.Page, query.PerPage,
-            query.HomeTeamId, query.AwayTeamId,
+            query.HomeTeamId, query.AwayTeamId, query.TeamId,
             query.Status, query.FromDate, query.ToDate);
 
         var paginatedResult = await repository.GetPaginatedAsync(filter, cancellationToken);

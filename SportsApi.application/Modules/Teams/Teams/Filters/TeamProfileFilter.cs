@@ -18,5 +18,9 @@ public sealed class TeamProfileFilter : Specification<Team>
         Query.Include(t => t.TeamParticipations!)
             .ThenInclude(tp => tp.Rosters!)
             .ThenInclude(r => r.Player);
+        Query.Include(t => t.TeamParticipations!)
+            .ThenInclude(tp => tp.HomeMatches!);
+        Query.Include(t => t.TeamParticipations!)
+            .ThenInclude(tp => tp.AwayMatches!);
     }
 }

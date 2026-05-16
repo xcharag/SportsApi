@@ -47,7 +47,8 @@ GET /api/v1/matches?page=1&perPage=20&tournamentId={id}&round=1&status=0
 | `tournamentId` | uuid | No | Filter by tournament |
 | `round` | int | No | Filter by `MatchRound` enum value |
 | `status` | int | No | Filter by `MatchStatus` enum value |
-| `teamParticipationId` | uuid | No | Filter matches involving a specific team |
+| `teamParticipationId` | uuid | No | Filter matches involving a specific TeamParticipation (season-scoped) |
+| `teamId` | uuid | No | Filter matches by global `Team.Id` — returns all matches (home **or** away) across every tournament that team has participated in |
 | `active` | bool | No | Soft-delete filter |
 
 **Response `200`**

@@ -4,6 +4,7 @@ using SportsApi.domain.Abstractions.Dtos;
 using SportsApi.domain.Abstractions.Messaging.Queries;
 using SportsApi.domain.Abstractions.Persistence;
 using SportsApi.domain.Enums;
+using SportsApi.domain.Enums.Status;
 using SportsApi.domain.Enums.Types;
 using SportsApi.domain.Modules.Teams;
 
@@ -24,7 +25,6 @@ public class TeamProfileQueryHandler(
         if (team is null)
             return Result.Fail<TeamProfileQueryResult>("Team not found", "TEAM_NOT_FOUND");
 
-        // Get Final-round RCs to mark championships (active = team won that tournament)
         var finalRcs = (await rcRepository.GetListBySpecificationAsync(
             new FinalRoundsForTeamFilter(query.TeamId), cancellationToken)).ToList();
 
@@ -46,7 +46,6 @@ public class TeamProfileQueryHandler(
             })
             .ToList();
 
-        // Aggregate career stats from all roster events
         var allEvents = (team.TeamParticipations ?? [])
             .SelectMany(tp => tp.Rosters ?? [])
             .SelectMany(r => r.Events ?? [])
@@ -60,7 +59,6 @@ public class TeamProfileQueryHandler(
             Penalties   = allEvents.Count(e => e.EventType == EventType.Penalty),
         };
 
-        // Historic top scorers
         var topScorers = (team.TeamParticipations ?? [])
             .SelectMany(tp => tp.Rosters ?? [])
             .GroupBy(r => r.PlayerId)
@@ -75,6 +73,8 @@ public class TeamProfileQueryHandler(
             .Take(10)
             .ToList();
 
+        var record = ComputeRecord(team.TeamParticipations ?? []);
+
         return Result.Success(new TeamProfileQueryResult
         {
             TeamId            = team.Id,
@@ -83,6 +83,39 @@ public class TeamProfileQueryHandler(
             TournamentHistory = history,
             TopScorers        = topScorers,
             CareerStats       = careerStats,
+            Record            = record,
         });
+    }
+
+    private static TeamRecord ComputeRecord(IEnumerable<domain.Modules.Tournaments.TeamParticipation> participations)
+    {
+        var record = new TeamRecord();
+
+        foreach (var tp in participations)
+        {
+            foreach (var m in (tp.HomeMatches ?? []).Where(m => m.Status == MatchStatus.Finished))
+            {
+                record.Played++;
+                record.GoalsFor     += m.ScoreHomeTeam;
+                record.GoalsAgainst += m.ScoreAwayTeam;
+
+                if      (m.ScoreHomeTeam > m.ScoreAwayTeam) record.Won++;
+                else if (m.ScoreHomeTeam < m.ScoreAwayTeam) record.Lost++;
+                else                                        record.Drawn++;
+            }
+
+            foreach (var m in (tp.AwayMatches ?? []).Where(m => m.Status == MatchStatus.Finished))
+            {
+                record.Played++;
+                record.GoalsFor     += m.ScoreAwayTeam;
+                record.GoalsAgainst += m.ScoreHomeTeam;
+
+                if      (m.ScoreAwayTeam > m.ScoreHomeTeam) record.Won++;
+                else if (m.ScoreAwayTeam < m.ScoreHomeTeam) record.Lost++;
+                else                                        record.Drawn++;
+            }
+        }
+
+        return record;
     }
 }

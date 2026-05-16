@@ -94,7 +94,7 @@ A `Player` can play for different teams in different tournaments (transfers, loa
 | GET | `/api/v1/rosters/{id}` | Get one roster entry |
 | PUT | `/api/v1/rosters` | Update roster entry |
 | DELETE | `/api/v1/rosters/{id}` | Delete roster entry |
-| GET | `/api/v1/matches` | List matches |
+| GET | `/api/v1/matches` | List matches (filters: `tournamentId`, `round`, `status`, `teamParticipationId`, **`teamId`** — cross-tournament) |
 | GET | `/api/v1/matches/{id}` | Get one match |
 | POST | `/api/v1/matches` | Create match |
 | PUT | `/api/v1/matches` | Update match (scores, status, round…) |
@@ -107,7 +107,7 @@ A `Player` can play for different teams in different tournaments (transfers, loa
 | **GET** | **`/api/v1/tournaments/{id}/standings`** | **Group stage standings (optional `?groupKey=A`)** |
 | **GET** | **`/api/v1/tournaments/{id}/bracket`** | **Playoff bracket (R16 → Final) with slot/match data** |
 | **GET** | **`/api/v1/tournaments/{id}/top-scorers`** | **Top scorers for a tournament (`?limit=N`)** |
-| **GET** | **`/api/v1/teams/{id}/profile`** | **Team profile: history, all-time top scorers, career stats** |
+| **GET** | **`/api/v1/teams/{id}/profile`** | **Team profile: history, all-time top scorers, career stats, W/D/L record** |
 | **GET** | **`/api/v1/matches/{id}/live`** | **SSE stream — real-time score + status updates (text/event-stream)** |
 
 ---
