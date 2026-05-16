@@ -6,7 +6,8 @@ A **Team** is a global catalogue entry (the real-world organisation). It can par
 
 When a team enters a specific tournament, use the **Register Teams** endpoint under the Tournaments module (`POST /api/v1/tournaments/{tournamentId}/team-participations`) — this creates a `TeamParticipation` for that season.
 
-All endpoints require a valid JWT in `Authorization: Bearer <token>` or the `accessToken` cookie.
+**GET endpoints are public** — no authentication required.  
+**POST / PUT / DELETE endpoints** require a valid JWT in `Authorization: Bearer <token>` or the `accessToken` cookie.
 
 ---
 
@@ -14,7 +15,6 @@ All endpoints require a valid JWT in `Authorization: Bearer <token>` or the `acc
 
 ```http
 GET /api/v1/teams?page=1&perPage=20&name=Barcelona&active=true
-Authorization: Bearer <token>
 ```
 
 **Query params**
@@ -57,7 +57,6 @@ Authorization: Bearer <token>
 
 ```http
 GET /api/v1/teams/{id}
-Authorization: Bearer <token>
 ```
 
 **Response `200`** — single team object.  
@@ -137,7 +136,6 @@ Returns a full team profile including cross-tournament history, all-time top sco
 
 ```http
 GET /api/v1/teams/{id}/profile
-Authorization: Bearer <token>
 ```
 
 **Response `200`**
@@ -180,7 +178,6 @@ Use the TeamParticipations endpoint filtered by `teamId` to see all tournaments 
 
 ```http
 GET /api/v1/team-participations?teamId={id}&page=1&perPage=20
-Authorization: Bearer <token>
 ```
 
 Each result includes the `tournamentId`, the display `name` and `logoUrl` used for that season.

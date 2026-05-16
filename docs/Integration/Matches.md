@@ -6,7 +6,8 @@ A **Match** is a game between two `TeamParticipation` entries (home and away) wi
 
 `RoundsClassified` tracks which teams are still active in competition — a team is eliminated when its `RoundsClassified` entry is soft-deleted (`active=false`).
 
-All endpoints require a valid JWT in `Authorization: Bearer <token>` or the `accessToken` cookie.
+**GET endpoints are public** — no authentication required.  
+**POST / PUT / DELETE endpoints** require a valid JWT in `Authorization: Bearer <token>` or the `accessToken` cookie.
 
 ---
 
@@ -35,7 +36,6 @@ All endpoints require a valid JWT in `Authorization: Bearer <token>` or the `acc
 
 ```http
 GET /api/v1/matches?page=1&perPage=20&tournamentId={id}&round=1&status=0
-Authorization: Bearer <token>
 ```
 
 **Query params**
@@ -86,7 +86,6 @@ Authorization: Bearer <token>
 
 ```http
 GET /api/v1/matches/{id}
-Authorization: Bearer <token>
 ```
 
 Includes `homeTeam`, `awayTeam`, and `events` navigation.
@@ -180,10 +179,10 @@ Authorization: Bearer <token>
 Subscribe to real-time score and status updates for a match.
 
 ```http
-GET /api/v1/matches/{matchId}/live?access_token=<token>
+GET /api/v1/matches/{matchId}/live
 ```
 
-> **Auth note:** `EventSource` in browsers cannot set custom headers. Pass the JWT as a query parameter instead of the `Authorization` header.
+> **Note:** No authentication is required for the live stream. It is fully public.
 
 **Response headers**
 ```
@@ -218,8 +217,7 @@ X-Accel-Buffering: no
 
 **JavaScript usage**
 ```js
-const token = localStorage.getItem('accessToken');
-const es = new EventSource(`/api/v1/matches/${matchId}/live?access_token=${token}`);
+const es = new EventSource(`/api/v1/matches/${matchId}/live`);
 
 es.addEventListener('update', (e) => {
   const payload = JSON.parse(e.data);
@@ -240,7 +238,6 @@ es.close();
 
 ```http
 GET /api/v1/rounds-classified?tournamentId={id}&round=2&page=1&perPage=50
-Authorization: Bearer <token>
 ```
 
 > By default only `active=true` (still competing) records are returned. Pass `active=false` to see eliminated teams.
@@ -279,7 +276,6 @@ Authorization: Bearer <token>
 
 ```http
 GET /api/v1/rounds-classified/{id}
-Authorization: Bearer <token>
 ```
 
 ### Eliminate a team (soft-delete)
@@ -299,7 +295,7 @@ Authorization: Bearer <token>
 
 2. Open match detail (public view)
    → GET /api/v1/matches/{id}  (includes team names + events)
-   → SSE: GET /api/v1/matches/{id}/live?access_token=<token>
+   → SSE: GET /api/v1/matches/{id}/live
       (subscribe for real-time score/status updates)
 
 3. Start match (admin)

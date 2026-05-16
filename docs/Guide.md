@@ -154,7 +154,7 @@ GET /api/v1/matches/{matchId}/live
 - Returns `Content-Type: text/event-stream`.
 - Sends a `heartbeat` event on connect.
 - Streams `update` events as JSON whenever the score or match status changes.
-- Because `EventSource` in browsers cannot set custom headers, the JWT is accepted via the `?access_token=<token>` query parameter.
+- **No authentication required** — the live stream endpoint is public (`[AllowAnonymous]`).
 - The `IMatchLiveHub` singleton (`SportsApi.infrastructure.Services.Live.MatchLiveHub`) manages channels per match using `ConcurrentDictionary<Guid, ConcurrentBag<Channel<string>>>`.
 - Handlers that publish updates inject `SportsApi.domain.Abstractions.Live.IMatchLiveHub` (the thin domain interface with just `Publish`).
 - The SSE controller injects `SportsApi.infrastructure.Services.Live.IMatchLiveHub` (which also exposes `Subscribe` / `Unsubscribe`).

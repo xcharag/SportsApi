@@ -4,7 +4,8 @@
 
 A **Tournament** is the top-level aggregate. It manages teams (via `TeamParticipation`), matches, and tracks team progression through rounds (`RoundsClassified`).
 
-All endpoints require a valid JWT in `Authorization: Bearer <token>` or the `accessToken` cookie.
+**GET endpoints are public** — no authentication required.  
+**POST / PUT / DELETE endpoints** require a valid JWT in `Authorization: Bearer <token>` or the `accessToken` cookie.
 
 ---
 
@@ -12,7 +13,6 @@ All endpoints require a valid JWT in `Authorization: Bearer <token>` or the `acc
 
 ```http
 GET /api/v1/tournaments?page=1&perPage=20&name=Champions&active=true
-Authorization: Bearer <token>
 ```
 
 **Query params**
@@ -59,7 +59,6 @@ Authorization: Bearer <token>
 
 ```http
 GET /api/v1/tournaments/{id}
-Authorization: Bearer <token>
 ```
 
 **Response `200`** — single tournament object.
@@ -235,7 +234,6 @@ Returns group standings sorted by points, then goal difference, then goals score
 ```http
 GET /api/v1/tournaments/{tournamentId}/standings
 GET /api/v1/tournaments/{tournamentId}/standings?groupKey=A
-Authorization: Bearer <token>
 ```
 
 **Query params**
@@ -278,7 +276,6 @@ Returns the knockout bracket for rounds R16 through Final. Each round contains s
 
 ```http
 GET /api/v1/tournaments/{tournamentId}/bracket
-Authorization: Bearer <token>
 ```
 
 **Response `200`**
@@ -310,7 +307,6 @@ Returns the top scorers for the tournament ranked by goals (dense rank — tied 
 
 ```http
 GET /api/v1/tournaments/{tournamentId}/top-scorers?limit=10
-Authorization: Bearer <token>
 ```
 
 **Query params**

@@ -4,7 +4,8 @@
 
 A **Match Event** records something that happened during a match — a goal, a yellow card, a red card, a penalty, etc. Each event is linked to a `Match` and to a `Roster` entry (the specific player who performed the action in that tournament squad).
 
-All endpoints require a valid JWT in `Authorization: Bearer <token>` or the `accessToken` cookie.
+**GET endpoints are public** — no authentication required.  
+**POST / PUT / DELETE endpoints** require a valid JWT in `Authorization: Bearer <token>` or the `accessToken` cookie.
 
 ---
 
@@ -35,7 +36,6 @@ Indicates which side benefits from the event (e.g. the team that scored, or the 
 
 ```http
 GET /api/v1/events?page=1&perPage=50&matchId={id}&eventType=0
-Authorization: Bearer <token>
 ```
 
 **Query params**
@@ -84,7 +84,6 @@ Authorization: Bearer <token>
 
 ```http
 GET /api/v1/events/{id}
-Authorization: Bearer <token>
 ```
 
 **Response `200`** — single event object with `roster` navigation.  

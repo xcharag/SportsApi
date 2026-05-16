@@ -4,7 +4,8 @@
 
 A **Player** is a global catalogue entry. Players are enrolled into tournaments via **Rosters** — each `Roster` ties a `Player` to a specific `TeamParticipation` (a team in a specific tournament). This means the same player can wear different shirt numbers or shirt names across tournament seasons.
 
-All endpoints require a valid JWT in `Authorization: Bearer <token>` or the `accessToken` cookie.
+**GET endpoints are public** — no authentication required.  
+**POST / PUT / DELETE endpoints** require a valid JWT in `Authorization: Bearer <token>` or the `accessToken` cookie.
 
 ---
 
@@ -12,7 +13,6 @@ All endpoints require a valid JWT in `Authorization: Bearer <token>` or the `acc
 
 ```http
 GET /api/v1/players?page=1&perPage=20&name=Martinez&active=true
-Authorization: Bearer <token>
 ```
 
 **Query params**
@@ -57,7 +57,6 @@ Authorization: Bearer <token>
 
 ```http
 GET /api/v1/players/{id}
-Authorization: Bearer <token>
 ```
 
 **Response `200`** — single player object.  
@@ -199,7 +198,6 @@ Content-Type: application/json
 
 ```http
 GET /api/v1/rosters?teamParticipationId={id}&page=1&perPage=50
-Authorization: Bearer <token>
 ```
 
 Returns all players enrolled for a given `TeamParticipation` — i.e. the squad for that team in that tournament.
@@ -229,7 +227,6 @@ Returns aggregated stats for a player across all tournaments: goals, cards, and 
 
 ```http
 GET /api/v1/players/{id}/stats
-Authorization: Bearer <token>
 ```
 
 **Response `200`**
@@ -276,7 +273,6 @@ Returns the full player profile: every team the player has played for, the event
 
 ```http
 GET /api/v1/players/{id}/profile
-Authorization: Bearer <token>
 ```
 
 **Response `200`**

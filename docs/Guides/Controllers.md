@@ -95,8 +95,17 @@ Controllers/
 
 ## Authorization
 
-### `[Authorize]`
-All endpoints must be decorated with `[Authorize]` to require a valid JWT.
+### GET endpoints — `[AllowAnonymous]`
+All `GET` endpoints are decorated with `[AllowAnonymous]`. They are fully public — no JWT is required. This allows them to be consumed by the public-facing website without any authentication.
+
+```csharp
+[ApiController]
+[AllowAnonymous]
+public class GetAllTournaments(IMediator mediator) : EndpointBaseAsync...
+```
+
+### Write endpoints — `[Authorize]` + `[DynamicPermission]`
+All `POST`, `PUT`, and `DELETE` endpoints require a valid JWT (`[Authorize]`) and go through the dynamic permission check (`[DynamicPermission]`).
 
 ### `[DynamicPermission]` (global filter)
 
